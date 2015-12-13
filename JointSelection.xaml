@@ -1,0 +1,16 @@
+﻿<Window x:Class="BucketGame.JointSelection"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="JointSelection" Height="300" Width="300">
+    <Grid>
+        <WrapPanel HorizontalAlignment="Left" Height="213" x:Name="Panel" Margin="10,10,0,0" VerticalAlignment="Top" Width="272">
+
+        </WrapPanel>
+        <WrapPanel HorizontalAlignment="Left" Height="37" Margin="10,223,0,0" VerticalAlignment="Top" Width="272">
+            <Button Content="Reset" Width="121" Height="35" x:Name="Reset" Click="Reset_Click"/>
+            <Button Content="All the bits" Width="121" Height="35" x:Name="AllBits" Click="AllBits_Click"/>
+
+
+        </WrapPanel>
+    </Grid>
+</Window>
