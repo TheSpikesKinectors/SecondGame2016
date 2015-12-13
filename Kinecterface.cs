@@ -130,5 +130,26 @@ namespace KinectorsLibrary
         {
             chooser.Stop();
         }
+
+        public bool Seated
+        {
+            get
+            {
+                return this.Sensor.SkeletonStream.TrackingMode == SkeletonTrackingMode.Seated;
+            }
+            set
+            {
+                this.Sensor.SkeletonStream.TrackingMode =
+                    value ? SkeletonTrackingMode.Seated : SkeletonTrackingMode.Default;
+            }
+        }
+
+        private KinectSensor Sensor
+        {
+            get
+            {
+                return chooser.Kinect;
+            }
+        }
     }
 }
