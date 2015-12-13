@@ -64,13 +64,14 @@ namespace KinectorsLibrary
                 }
                 byte[] colorPixels = new byte[colorFrame.PixelDataLength];
                 colorFrame.CopyPixelDataTo(colorPixels);
-                
+
                 //background removal
                 if (BackgroundRemoval)
                 {
                     Skeleton skeleton = skeletons.FirstOrDefault();
                     int maxDepth = -1, minDepth = -1;
-                    if (skeleton != default(Skeleton)) {
+                    if (skeleton != default(Skeleton))
+                    {
                         short max = skeleton.Joints.Max(
                             joint => depths[(int)(depthFrame.Width * joint.Position.X),
                             (int)(depthFrame.Height * joint.Position.Y)]);
@@ -81,12 +82,12 @@ namespace KinectorsLibrary
                         maxDepth = max + diff;
                         minDepth = min - diff;
                     }
-                    for(int x = 0; x < colorFrame.Width; x++)
+                    for (int x = 0; x < colorFrame.Width; x++)
                     {
-                        for(int y = 0; y < colorFrame.Height; y++)
+                        for (int y = 0; y < colorFrame.Height; y++)
                         {
                             bool isProbablyPerson;
-                            if(skeleton == default(Skeleton))
+                            if (skeleton == default(Skeleton))
                             {
                                 isProbablyPerson = false;
                             }
@@ -95,11 +96,11 @@ namespace KinectorsLibrary
                                 short depth = depths[x, y];
                                 isProbablyPerson = depth > minDepth && depth < maxDepth;
                             }
-                            colorPixels[(y*colorFrame.Width + x) * 4] = (byte)(isProbablyPerson ? 255 : 0);
+                            colorPixels[(y * colorFrame.Width + x) * 4] = (byte)(isProbablyPerson ? 255 : 0);
                         }
                     }
                 }
-                
+
                 DataRecieved(skeletons, depths, colorPixels);
             }
         }
@@ -141,6 +142,19 @@ namespace KinectorsLibrary
             {
                 this.Sensor.SkeletonStream.TrackingMode =
                     value ? SkeletonTrackingMode.Seated : SkeletonTrackingMode.Default;
+            }
+        }
+
+        public bool NearMode
+        {
+            get
+            {
+                return this.Sensor.DepthStream.Range == DepthRange.Near;
+            }
+
+            set
+            {
+                this.Sensor.DepthStream.Range = value ? DepthRange.Near : DepthRange.Default;
             }
         }
 
