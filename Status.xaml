@@ -10,7 +10,7 @@
         <CheckBox x:FieldModifier="public" x:Name="checkboxShowOnlyWantedTarget"  FontSize="30" Content="הצג רק את המטרה הרצויה" HorizontalAlignment="Left" Margin="10,204,0,0" VerticalAlignment="Top" Height="46" Width="418"/>
         <Label x:Name="labelTouchingDistance" Content="מרחק מינימלי לנגיעה" FontSize="25" HorizontalAlignment="Left" Margin="10,274,0,0" VerticalAlignment="Top" Height="74" Width="418"/>
         <Slider x:Name="sliderTouchingDistance" ValueChanged="sliderTouchingDistance_ValueChanged" HorizontalAlignment="Left" Margin="10,348,0,0" VerticalAlignment="Top" Width="418" Minimum="30" Maximum="70" TickFrequency="5" IsSnapToTickEnabled="True"/>
-        <Button Content="מציאת טווח תנועה (תלוי במרחק מהמצלמה)" HorizontalAlignment="Left" Margin="75,433,0,0" VerticalAlignment="Top" Width="263" Height="64" Click="Button_Click" x:Name="buttonMeasure"/>
+        <Button Content="מציאת טווח תנועה (תלוי במרחק מהמצלמה)" HorizontalAlignment="Left" Margin="75,433,0,0" VerticalAlignment="Top" Width="263" Height="64" x:Name="buttonMeasure"/>
 
     </Grid>
 </Window>

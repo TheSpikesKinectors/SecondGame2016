@@ -11,6 +11,7 @@ namespace KinectorsLibrary
     {
         private KinectSensorChooser chooser;
         public event Action<Skeleton[], short[,], byte[]> DataRecieved;
+        public event Action<SkeletonFrame,DepthImageFrame,ColorImageFrame> ErrorWhileRecivingData;
         private bool backgroundRemoval;
 
         public bool BackgroundRemoval
@@ -31,6 +32,7 @@ namespace KinectorsLibrary
             this.chooser = chooser;
             this.chooser.KinectChanged += KinectChanged;
             this.DataRecieved = (skels, depth, colors) => { };
+            this.ErrorWhileRecivingData = (s,d,c) => { };
         }
 
         private void KinectChanged(object sender, KinectChangedEventArgs e)
@@ -52,7 +54,11 @@ namespace KinectorsLibrary
             using (DepthImageFrame depthFrame = e.OpenDepthImageFrame())
             using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())
             {
-
+                if(colorFrame == null || depthFrame == null || skeletonFrame == null)
+                {
+                    ErrorWhileRecivingData(skeletonFrame, depthFrame, colorFrame);
+                    return;
+                }
                 Skeleton[] skeletons = new Skeleton[skeletonFrame.SkeletonArrayLength];
                 skeletonFrame.CopySkeletonDataTo(skeletons);
                 short[,] depths = new short[depthFrame.Width, depthFrame.Height];
@@ -144,6 +150,7 @@ namespace KinectorsLibrary
                     value ? SkeletonTrackingMode.Seated : SkeletonTrackingMode.Default;
             }
         }
+
 
         public bool NearMode
         {

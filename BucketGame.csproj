@@ -36,10 +36,10 @@
   <ItemGroup>
     <Reference Include="Microsoft.Kinect, Version=1.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Kinect.Toolkit">
-      <HintPath>..\Microsoft\Microsoft.Kinect.Toolkit\obj\Debug\Microsoft.Kinect.Toolkit.dll</HintPath>
+      <HintPath>..\..\Kinect\Microsoft.Kinect.Toolkit.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Kinect.Toolkit.Controls">
-      <HintPath>..\Microsoft\Microsoft.Kinect.Toolkit.Controls\obj\Debug\Microsoft.Kinect.Toolkit.Controls.dll</HintPath>
+      <HintPath>..\..\Kinect\Microsoft.Kinect.Toolkit.Controls.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

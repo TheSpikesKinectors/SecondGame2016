@@ -7,6 +7,7 @@ using System.Windows.Media;
 using Microsoft.Kinect;
 using Microsoft.Kinect.Toolkit;
 using System.Windows.Media.Imaging;
+using KinectorsLibrary;
 
 namespace BucketGame
 {
@@ -128,6 +129,10 @@ namespace BucketGame
 
         public MainWindow()
         {
+
+
+            InitializeComponent();
+
             chooser.KinectSensorChooser = new Microsoft.Kinect.Toolkit.KinectSensorChooser();
             kinecterface = new Kinecterface(chooser.KinectSensorChooser);
             kinecterface.Start();
@@ -138,8 +143,6 @@ namespace BucketGame
 
             mediaPlayer = new MediaPlayer();
             jointsPlayer = new MediaPlayer();
-
-            InitializeComponent();
 
             statusWindow = new Status(this);
             statusWindow.Show();
