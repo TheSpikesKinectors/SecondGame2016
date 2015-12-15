@@ -46,5 +46,29 @@ namespace BucketGame {
                 this["MessageCantSeePlayer"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("משחק")]
+        public string TabHeaderStatus {
+            get {
+                return ((string)(this["TabHeaderStatus"]));
+            }
+            set {
+                this["TabHeaderStatus"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("טווח תנועה לא אותחל. יש לאתחל טווח תנועה לפני תחילת המשחק")]
+        public string MessageMeasurementNotInitialize {
+            get {
+                return ((string)(this["MessageMeasurementNotInitialize"]));
+            }
+            set {
+                this["MessageMeasurementNotInitialize"] = value;
+            }
+        }
     }
 }

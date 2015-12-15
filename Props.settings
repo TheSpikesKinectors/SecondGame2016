@@ -8,5 +8,11 @@
     <Setting Name="MessageCantSeePlayer" Type="System.String" Scope="User">
       <Value Profile="(Default)">נראה כי אין פה אף אחד</Value>
     </Setting>
+    <Setting Name="TabHeaderStatus" Type="System.String" Scope="User">
+      <Value Profile="(Default)">משחק</Value>
+    </Setting>
+    <Setting Name="MessageMeasurementNotInitialize" Type="System.String" Scope="User">
+      <Value Profile="(Default)">טווח תנועה לא אותחל. יש לאתחל טווח תנועה לפני תחילת המשחק</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -48,9 +48,9 @@ namespace BucketGame
         bool currentlyPlaying = false;
 
         /// <summary>
-        /// The window through which the joints to be used are selected.
+        /// The panel through which the joints to be used are selected.
         /// </summary>
-        JointSelection jointSelectionWindow;
+        JointSelection jointSelectionPanel;
 
         /// <summary>
         /// the joint that is current used. That is, the joint which the player needs to use.
@@ -67,12 +67,7 @@ namespace BucketGame
                 return chooser.KinectSensorChooser.Kinect;
             }
         }
-
-        /// <summary>
-        /// The status window that contains data and lets the player optimize things
-        /// </summary>
-        Status statusWindow;
-
+        
         /// <summary>
         /// The skeleton of the player in front of the Kinect
         /// </summary>
@@ -126,6 +121,7 @@ namespace BucketGame
             }
         }
 
+        Status status;
 
         public MainWindow()
         {
@@ -138,16 +134,18 @@ namespace BucketGame
             kinecterface.Start();
             kinecterface.DataRecieved += DataRecieved;
 
-            jointSelectionWindow = new JointSelection(this);
-            jointSelectionWindow.Show();
+            jointSelectionPanel = new JointSelection(this);
+            jointSelectionPanel.Show();
 
             mediaPlayer = new MediaPlayer();
             jointsPlayer = new MediaPlayer();
 
-            statusWindow = new Status(this);
-            statusWindow.Show();
-            statusWindow.checkboxShowOnlyWantedTarget.Checked += (o, e) => ChangedShowAllTargets();
-            statusWindow.checkboxShowOnlyWantedTarget.Unchecked += (o, e) => ChangedShowAllTargets();
+            status = new Status(this);
+            status.Visibility = Visibility.Visible;
+            status.checkboxShowOnlyWantedTarget.Checked += (o, e) => ChangedShowAllTargets();
+            status.checkboxShowOnlyWantedTarget.Unchecked += (o, e) => ChangedShowAllTargets();
+            status.Header = Props.Default.TabHeaderStatus;
+            tabControl.Items.Add(status);
 
             InitializeTargets();
 
@@ -186,7 +184,7 @@ namespace BucketGame
 
             if (currentlyPlaying)
             {
-                statusWindow.Update();
+                status.Update();
             }
             else
             {
@@ -198,7 +196,7 @@ namespace BucketGame
             Point3D rightHand = BitmapPrefferences.ConvertToPoint(skeleton, JointType.HandLeft, depth);
             Point3D shoulderCenter = BitmapPrefferences.ConvertToPoint(skeleton, JointType.ShoulderCenter, depth);
 
-            int radius = statusWindow.GetReachDistance(shoulderCenter.Z);
+            int radius = status.GetReachDistance(shoulderCenter.Z);
             Canvas.SetLeft(arc, shoulderCenter.X - radius);
             Canvas.SetTop(arc, shoulderCenter.Y - radius);
             arc.Width = arc.Height = 2 * radius;
@@ -206,7 +204,7 @@ namespace BucketGame
 
             //distance of the player's joint from the target
             double distance = Util.Distance(locationOfCurrentJoint, currentTarget.CenterLocation);
-            //statusWindow.ExtraInfo = distance.ToString();
+            //status.ExtraInfo = distance.ToString();
 
             if (hasTouchedObject) //if the player already touched the object...
             {
@@ -217,7 +215,7 @@ namespace BucketGame
                 double distanceFromTarget = Util.Distance(locationOfCurrentJoint, locationOfCurrentJoint);
 
                 //if we basically touched the target - then...
-                if (distanceFromTarget <= statusWindow.TouchingDistance)
+                if (distanceFromTarget <= status.TouchingDistance)
                 {
                     hasTouchedObject = false;
                     CreateNextImage(BitmapPrefferences.ConvertToPoint(skeleton, JointType.ShoulderCenter, depth));
@@ -225,7 +223,7 @@ namespace BucketGame
 
             }
             //if we haven't touched the target, but now we just firsly did, then..
-            else if (distance <= statusWindow.TouchingDistance)
+            else if (distance <= status.TouchingDistance)
             {
                 hasTouchedObject = true;
             }
@@ -246,11 +244,13 @@ namespace BucketGame
         {
             //the following loop initializes and locates the targets on the screen.
             int x = 25, y = Consts.DrawingSettings.PixelHeight - Consts.TargetDiameter;
-            for (int i = 0; i < Consts.ImageObjectPaths.Length; i++) //iterate over Consts.ImageObejctPaths,
-                                                                     //wchich is an array of the local paths of the
-                                                                     //images of the targets.
+            for (int i = 0; i < Consts.ImageObjectPaths.Length; i++)
             {
-                labels[i] = new Label() { Content = "0", FontSize = 42, Foreground = Brushes.Red };
+                labels[i] = new Label()
+                {
+                    Content = "0", FontSize = 42,
+                    Foreground = Brushes.Yellow, FontWeight = FontWeights.UltraBold
+                };
                 //iteratively initialize the Targets array
                 targets[i] =
                     new ImageObject(Consts.BagPaths[i])
@@ -284,7 +284,7 @@ namespace BucketGame
 
         public void ChangedShowAllTargets()
         {
-            bool? hideOtherTargets = statusWindow.checkboxShowOnlyWantedTarget.IsChecked;
+            bool? hideOtherTargets = status.checkboxShowOnlyWantedTarget.IsChecked;
             if (hideOtherTargets != null && (bool)hideOtherTargets) //should hide other targets
             {
                 for (int i = 0; i < targets.Length; i++)
@@ -320,7 +320,7 @@ namespace BucketGame
             firstTime = true;
             if (!measurement.IsInitialized)
             {
-                MessageBox.Show("לא בוצעה מדידת טווח תנועה. יש לבצע לפני תחילת המשחק");
+                MessageBox.Show(Props.Default.MessageMeasurementNotInitialize);
                 return;
             }
 
@@ -339,7 +339,7 @@ namespace BucketGame
             BagsDown = !BagsDown;
             try
             {
-                currentlyUsedJoint = jointSelectionWindow.Selected.ChooseRandom(random);
+                currentlyUsedJoint = jointSelectionPanel.Selected.ChooseRandom(random);
             }
             catch (Exception)
             {
@@ -377,7 +377,7 @@ namespace BucketGame
             Point p;
             do
             {
-                double r = statusWindow.GetReachDistance(shoulderCenter.Z) * random.NextDouble();
+                double r = status.GetReachDistance(shoulderCenter.Z) * random.NextDouble();
 
                 double dy = (random.NextDouble() * r);
                 double dx = Math.Sqrt(r * r - dy * dy);
@@ -420,8 +420,7 @@ namespace BucketGame
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            jointSelectionWindow.Close();
-            statusWindow.Close();
+            jointSelectionPanel.Close();
             if (sensor == null) return;
             sensor.ColorStream.Disable();
             sensor.AudioSource.Stop();

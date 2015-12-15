@@ -5,17 +5,23 @@
         xmlns:kinect_toolkit="clr-namespace:Microsoft.Kinect.Toolkit;assembly=Microsoft.Kinect.Toolkit"
         xmlns:kinect_controls="clr-namespace:Microsoft.Kinect.Toolkit.Controls;assembly=Microsoft.Kinect.Toolkit.Controls"
         Icon="icon.ico"
-        xmlns:controls="clr-namespace:BucketGame"
-        Title="MainWindow" Width="640" Height="480" Closed="Window_Closed" >
-    <Grid>
-        <Canvas Width="640" Height="480" x:Name="targetsCanvas" Margin="0,0">
-            <!--<controls:Bucket Height="100" Width="100" Canvas.Left="100" Canvas.Top="100" x:Name="Portal"></controls:Bucket>-->
+        xmlns:local="clr-namespace:BucketGame"
+        Title="MainWindow"  Closed="Window_Closed"
+        WindowState="Maximized" Width="Auto" Height="Auto"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
+    <Grid Margin="0,0,0,0">
+        <Canvas Width="640" Height="480" x:Name="targetsCanvas" Margin="0,0,640,480">
             <Image x:Name="frame" HorizontalAlignment="Left" VerticalAlignment="Top" Width="640" Height="480"/>
+            <Image HorizontalAlignment="Left" VerticalAlignment="Top" Width="640" Height="480" Source="imgs/candyland.jpg"/>
             <Ellipse Visibility="Visible" Fill="Transparent" Stroke="Black" x:Name="arc" StrokeThickness="3"/>
             <Label Content="" x:Name="StatusLabel" FontSize="30" Margin="10,162,10,244" HorizontalAlignment="Center" VerticalAlignment="Center" Height="44" Width="612" Foreground="Red"/>
             <Button Content="Start" Height="42" Canvas.Left="10" Canvas.Top="10" Width="122" Click="Button_Click" x:Name="GameButton"/>
             <kinect_toolkit:KinectSensorChooserUI Width="300" Height="106" x:Name="chooser" IsEnabled="True" Visibility="Visible"/>
+        
+        <TabControl Canvas.Left="640" x:Name="tabControl">
+                
+            </TabControl>
         </Canvas>
     </Grid>
-
 </Window>

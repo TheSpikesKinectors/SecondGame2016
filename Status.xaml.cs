@@ -3,20 +3,22 @@ using System.Windows;
 using System.Windows.Input;
 using Microsoft.Kinect;
 using System.Text.RegularExpressions;
+using System.Windows.Controls;
+
 namespace BucketGame
 {
     /// <summary>
     /// Interaction logic for Status.xaml
     /// </summary>
-    public partial class Status : Window
+    public partial class Status: TabItem
     {
-        MainWindow parent;
+        private MainWindow parent;
         
         public int InitialReachDistance
         {
             get
             {
-                return (int)parent.measurement.MeasuredPixelLength;
+                return (int)Owner.measurement.MeasuredPixelLength;
             }
         }
 
@@ -24,11 +26,9 @@ namespace BucketGame
         {
             get
             {
-                return (int)parent.measurement.MeasuringDistance;
+                return (int)Owner.measurement.MeasuringDistance;
             }
         }
-
-        private int score;
         
 
         /// <summary>
@@ -36,8 +36,8 @@ namespace BucketGame
         /// </summary>
         public void Update()
         {
-            LabelTime.Content = "Time: " + parent.game.TimeElapsed.ToString(Props.Default.TimeFormat);
-            LabelScore.Content = parent.game.TotalScore.ToString();
+            LabelTime.Content = "Time: " + Owner.game.TimeElapsed.ToString(Props.Default.TimeFormat);
+            LabelScore.Content = Owner.game.TotalScore.ToString();
             if (Joint == JointType.HandLeft)
             {
                 LabelJoint.Content = "!יד שמאל";
@@ -53,14 +53,16 @@ namespace BucketGame
         }
 
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public Status(MainWindow parent)
+        public Status(MainWindow owner)
         {
-            this.parent = parent;
-            InitializeComponent();
-            Left = 700;
+            this.Owner = owner;
+            this.DataContext = this.Owner;
+            try {
+                InitializeComponent();
+            }catch(NullReferenceException e)
+            {
+                
+            }
         }
 
         /// <summary>
@@ -80,7 +82,7 @@ namespace BucketGame
         {
             get
             {
-                return parent.currentlyUsedJoint;
+                return Owner.currentlyUsedJoint;
             }
         }
 
@@ -95,6 +97,19 @@ namespace BucketGame
             get
             {
                 return sliderTouchingDistance.Value;
+            }
+        }
+
+        public MainWindow Owner
+        {
+            get
+            {
+                return parent;
+            }
+
+            set
+            {
+                parent = value;
             }
         }
 

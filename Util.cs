@@ -327,6 +327,20 @@ namespace BucketGame
             return Skips(from, 0, -1);
         }
 
-
+        public static IEnumerable<Exception> GetInnerExceptionsChain(this Exception e)
+        {
+            Exception it = e, prev = null;
+            while(it != null)
+            {
+                if(prev == it)
+                {
+                    throw new Exception("inner exception loop");
+                }
+                yield return it;
+                prev = it;
+                it = it.InnerException;
+            }
+        }
+        
     }
 }
