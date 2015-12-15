@@ -70,5 +70,17 @@ namespace BucketGame {
                 this["MessageMeasurementNotInitialize"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("בחירת מפרקים")]
+        public string TabHeaderJointSelection {
+            get {
+                return ((string)(this["TabHeaderJointSelection"]));
+            }
+            set {
+                this["TabHeaderJointSelection"] = value;
+            }
+        }
     }
 }

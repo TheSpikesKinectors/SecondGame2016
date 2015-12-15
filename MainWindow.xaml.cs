@@ -134,9 +134,6 @@ namespace BucketGame
             kinecterface.Start();
             kinecterface.DataRecieved += DataRecieved;
 
-            jointSelectionPanel = new JointSelection(this);
-            jointSelectionPanel.Show();
-
             mediaPlayer = new MediaPlayer();
             jointsPlayer = new MediaPlayer();
 
@@ -146,6 +143,10 @@ namespace BucketGame
             status.checkboxShowOnlyWantedTarget.Unchecked += (o, e) => ChangedShowAllTargets();
             status.Header = Props.Default.TabHeaderStatus;
             tabControl.Items.Add(status);
+
+            jointSelectionPanel = new JointSelection(this) { Header = Props.Default.TabHeaderJointSelection };
+            tabControl.Items.Add(jointSelectionPanel);
+            tabControl.SelectedItem = jointSelectionPanel;
 
             InitializeTargets();
 
@@ -420,7 +421,6 @@ namespace BucketGame
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            jointSelectionPanel.Close();
             if (sensor == null) return;
             sensor.ColorStream.Disable();
             sensor.AudioSource.Stop();

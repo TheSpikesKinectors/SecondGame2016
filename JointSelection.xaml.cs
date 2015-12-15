@@ -8,7 +8,7 @@ namespace BucketGame
     /// <summary>
     /// A window that controls the joints that are used in the game
     /// </summary>
-    public partial class JointSelection : Window
+    public partial class JointSelection : TabItem
     {
         /// <summary>
         /// a list of checkboxes used to select the joints that are used in the game
@@ -23,13 +23,12 @@ namespace BucketGame
         /// <summary>
         /// the MainWindow that uses this window
         /// </summary>
-        MainWindow parent;
+        MainWindow owner;
 
-        public JointSelection(MainWindow parent)
+        public JointSelection(MainWindow owner)
         {
-            this.parent = parent;
-            Top = 0;
-            Left = 0;
+            this.Owner = owner;
+           
             InitializeComponent();
             foreach (JointType joint in availableJoints) //initialize the checkboxes
             {
@@ -58,7 +57,7 @@ namespace BucketGame
         /// </summary>
         void cb_Checked(object sender, RoutedEventArgs e)
         {
-            parent.ChangeJoint();
+            Owner.ChangeJoint();
         }
 
         /// <summary>
@@ -83,6 +82,19 @@ namespace BucketGame
                     i++;
                 }
                 return ret;
+            }
+        }
+
+        public MainWindow Owner
+        {
+            get
+            {
+                return owner;
+            }
+
+            set
+            {
+                owner = value;
             }
         }
 

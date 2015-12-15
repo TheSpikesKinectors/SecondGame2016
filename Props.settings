@@ -14,5 +14,8 @@
     <Setting Name="MessageMeasurementNotInitialize" Type="System.String" Scope="User">
       <Value Profile="(Default)">טווח תנועה לא אותחל. יש לאתחל טווח תנועה לפני תחילת המשחק</Value>
     </Setting>
+    <Setting Name="TabHeaderJointSelection" Type="System.String" Scope="User">
+      <Value Profile="(Default)">בחירת מפרקים</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
