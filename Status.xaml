@@ -1,7 +1,8 @@
 ﻿<Window x:Class="BucketGame.Status"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Status" Height="594.687" Width="445.731">
+        Title="Status" Height="594.687" Width="445.731"
+        Icon="icon.ico">
     <Grid  >
         <Label Content="Time: 00:00.00" x:Name="LabelTime" HorizontalAlignment="Left" FontSize="30" Height="53" Margin="10,10,0,0" VerticalAlignment="Top" Width="264"/>
         <Label Content="Score: 0" x:Name="LabelScore" HorizontalAlignment="Left" FontSize="30" Height="53" Margin="10,63,0,0" VerticalAlignment="Top" Width="264"/>

@@ -252,7 +252,11 @@ namespace BucketGame
             {
                 labels[i] = new Label() { Content = "0", FontSize = 42, Foreground = Brushes.Red };
                 //iteratively initialize the Targets array
-                targets[i] = new ImageObject(Consts.BagPaths[i], new Point(0, 0));
+                targets[i] =
+                    new ImageObject(Consts.BagPaths[i])
+                    {
+                       Width = Consts.TargetDiameter, Height = Consts.TargetDiameter
+                    };
 
                 //this is just a reference for conviniece. Everytime in this loop when there is an "it"
                 // (short for iterated), it is equivalent to writing Targets[i]

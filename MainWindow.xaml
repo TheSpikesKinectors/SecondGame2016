@@ -4,7 +4,7 @@
         xmlns:kinect="clr-namespace:Microsoft.Kinect;assembly=Microsoft.Kinect"
         xmlns:kinect_toolkit="clr-namespace:Microsoft.Kinect.Toolkit;assembly=Microsoft.Kinect.Toolkit"
         xmlns:kinect_controls="clr-namespace:Microsoft.Kinect.Toolkit.Controls;assembly=Microsoft.Kinect.Toolkit.Controls"
-        
+        Icon="icon.ico"
         xmlns:controls="clr-namespace:BucketGame"
         Title="MainWindow" Width="640" Height="480" Closed="Window_Closed" >
     <Grid>

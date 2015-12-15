@@ -45,6 +45,8 @@ namespace KinectorsLibrary
             {
                 Enable(e.NewSensor);
                 e.NewSensor.AllFramesReady += AllFramesReady;
+                Seated = seated;
+                NearMode = nearMode;
             }
         }
 
@@ -106,7 +108,6 @@ namespace KinectorsLibrary
                         }
                     }
                 }
-
                 DataRecieved(skeletons, depths, colorPixels);
             }
         }
@@ -138,30 +139,33 @@ namespace KinectorsLibrary
             chooser.Stop();
         }
 
+        private bool seated;
         public bool Seated
         {
             get
             {
-                return this.Sensor.SkeletonStream.TrackingMode == SkeletonTrackingMode.Seated;
+                return seated;
             }
             set
             {
+                this.seated = value;
                 this.Sensor.SkeletonStream.TrackingMode =
                     value ? SkeletonTrackingMode.Seated : SkeletonTrackingMode.Default;
             }
         }
 
-
+        private bool nearMode;
         public bool NearMode
         {
             get
             {
-                return this.Sensor.DepthStream.Range == DepthRange.Near;
+                return nearMode;
             }
 
             set
             {
-                this.Sensor.DepthStream.Range = value ? DepthRange.Near : DepthRange.Default;
+                nearMode = value;
+                this.Sensor.DepthStream.Range = nearMode ? DepthRange.Near : DepthRange.Default;
             }
         }
 

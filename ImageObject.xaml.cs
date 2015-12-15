@@ -70,5 +70,37 @@ namespace BucketGame
             this.SetX(x);
             this.SetY(y);
         }
+
+        public new double Width
+        {
+            get
+            {
+                return base.Width;
+            }
+
+            set
+            {
+                base.Width = value;
+                grid.Width = value;
+                image.Width = value;
+            }
+        }
+
+
+        public new double Height
+        {
+            get
+            {
+                return base.Height;
+            }
+
+            set
+            {
+                base.Height = value;
+                grid.Height = value;
+                image.Height = value;
+            }
+        }
+
     }
 }
