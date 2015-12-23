@@ -25,7 +25,7 @@ namespace BucketGame {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("hh:mm:ss.fff")]
+        [global::System.Configuration.DefaultSettingValueAttribute("hh\\:mm\\:ss\\.fff")]
         public string TimeFormat {
             get {
                 return ((string)(this["TimeFormat"]));
@@ -80,6 +80,36 @@ namespace BucketGame {
             }
             set {
                 this["TabHeaderJointSelection"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <string>טוען את המשחק</string>
+  <string>מכין את המשחק הנפלא ביותר בכל הזמנים</string>
+  <string>מחפש תירוצים לזמן טעינת המשחק</string>
+  <string>מחפש את התשובה לחיים, ליקום וכל השאר</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection Excuses {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["Excuses"]));
+            }
+            set {
+                this["Excuses"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("00:00:03.5000000")]
+        public global::System.TimeSpan TimeForExcuse {
+            get {
+                return ((global::System.TimeSpan)(this["TimeForExcuse"]));
+            }
+            set {
+                this["TimeForExcuse"] = value;
             }
         }
     }

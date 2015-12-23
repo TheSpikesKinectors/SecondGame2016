@@ -31,12 +31,21 @@ namespace BucketGame
             Stride = stride;
         }
 
-        public int ConvertX(float x) { return (int)(PixelWidth * x); }
-        public int ConvertY(float y) { return (int)(PixelHeight * y); }
+        public int ConvertX(float x) { return (int)(PixelWidth * (x + 1) / 2); }
+        public int ConvertY(float y) { return (int)(PixelHeight * (-y + 1) / 2); }
         public Point3D ConvertToPoint(SkeletonPoint position, short[,] depthInfo)
         {
             int x = ConvertX(position.X), y = ConvertY(position.Y);
-            return new Point3D(x, y, depthInfo[x, y]);
+            int z;
+            try
+            {
+                z = depthInfo[x, y];
+            }
+            catch (IndexOutOfRangeException)
+            {
+                z = 0;
+            }
+            return new Point3D(x, y, z);
         }
 
         public Point3D ConvertToPoint(Skeleton skeleton, JointType joint, short[,] depthInfo)

@@ -87,7 +87,7 @@ namespace BucketGame
                 DpiY = 96,
                 PixelFromatUsed = PixelFormats.Bgr32,
                 BitmapPalleteUsed = null,
-                Stride = 4
+                Stride = 4 * 640
             };
         public static readonly int TargetDiameter = 200;
         public static readonly int DistanceBetweenTargets = 200;

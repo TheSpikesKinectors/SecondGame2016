@@ -55,13 +55,13 @@ namespace BucketGame
         {
             get
             {
-                return new Point(Canvas.GetLeft(this) + grid.Width/2,
-                    Canvas.GetTop(this) + grid.Height/2);               
+                return new Point(Canvas.GetLeft(this) + image.ActualWidth/ 2,
+                    Canvas.GetTop(this) + image.ActualHeight / 2);               
             }
             set
             {
-                Canvas.SetLeft(this,value.X - grid.Width/2);
-                Canvas.SetTop(this,value.Y - grid.Height / 2);
+                Canvas.SetLeft(this,value.X - image.ActualWidth/2);
+                Canvas.SetTop(this,value.Y - image.ActualHeight / 2);
             }
         }
 
@@ -102,5 +102,27 @@ namespace BucketGame
             }
         }
 
+        public double X
+        {
+            get
+            {
+                return Canvas.GetLeft(this);
+            }
+            set
+            {
+                Canvas.SetLeft(this, value);
+            }
+        }
+        public double Y
+        {
+            get
+            {
+                return Canvas.GetTop(this);
+            }
+            set
+            {
+                Canvas.SetTop(this, value);
+            }
+        }
     }
 }

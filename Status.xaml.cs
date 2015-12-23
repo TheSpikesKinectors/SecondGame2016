@@ -59,7 +59,7 @@ namespace BucketGame
             this.DataContext = this.Owner;
             try {
                 InitializeComponent();
-            }catch(NullReferenceException e)
+            }catch(NullReferenceException)
             {
                 
             }

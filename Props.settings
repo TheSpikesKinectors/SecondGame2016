@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="TimeFormat" Type="System.String" Scope="User">
-      <Value Profile="(Default)">hh:mm:ss.fff</Value>
+      <Value Profile="(Default)">hh\:mm\:ss\.fff</Value>
     </Setting>
     <Setting Name="MessageCantSeePlayer" Type="System.String" Scope="User">
       <Value Profile="(Default)">נראה כי אין פה אף אחד</Value>
@@ -16,6 +16,18 @@
     </Setting>
     <Setting Name="TabHeaderJointSelection" Type="System.String" Scope="User">
       <Value Profile="(Default)">בחירת מפרקים</Value>
+    </Setting>
+    <Setting Name="Excuses" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;טוען את המשחק&lt;/string&gt;
+  &lt;string&gt;מכין את המשחק הנפלא ביותר בכל הזמנים&lt;/string&gt;
+  &lt;string&gt;מחפש תירוצים לזמן טעינת המשחק&lt;/string&gt;
+  &lt;string&gt;מחפש את התשובה לחיים, ליקום וכל השאר&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="TimeForExcuse" Type="System.TimeSpan" Scope="User">
+      <Value Profile="(Default)">00:00:03.5000000</Value>
     </Setting>
   </Settings>
 </SettingsFile>

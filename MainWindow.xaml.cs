@@ -19,6 +19,7 @@ namespace BucketGame
         internal Game game = new Game();
         internal LengthMeasurment measurement = new LengthMeasurment();
         private Label[] labels = new Label[Consts.BagPaths.Length];
+        private DebuggingTable debuggingTable = new DebuggingTable();
         private bool bagsDown;
         private bool BagsDown
         {
@@ -30,7 +31,7 @@ namespace BucketGame
             {
                 if (bagsDown == value) return;
                 bagsDown = value;
-                int y = bagsDown ? (int)Height - Consts.TargetDiameter : 0;
+                int y = bagsDown ? Consts.DrawingSettings.PixelHeight - Consts.TargetDiameter : 0;
 
                 for (int i = 0; i < targets.Length; i++)
                 {
@@ -64,10 +65,17 @@ namespace BucketGame
         {
             get
             {
-                return chooser.KinectSensorChooser.Kinect;
+                try
+                {
+                    return chooser.KinectSensorChooser.Kinect;
+                }
+                catch (InvalidOperationException)
+                {
+                    return KinectSensor.KinectSensors.FirstOrDefault();
+                }
             }
         }
-        
+
         /// <summary>
         /// The skeleton of the player in front of the Kinect
         /// </summary>
@@ -123,57 +131,61 @@ namespace BucketGame
 
         Status status;
 
+        ImageObject toGrab = new ImageObject(random.Sample(Consts.ImageObjectPaths));
         public MainWindow()
         {
-
-
             InitializeComponent();
 
+            MaxHeight = Height = SystemParameters.MaximizedPrimaryScreenHeight;
+
             chooser.KinectSensorChooser = new Microsoft.Kinect.Toolkit.KinectSensorChooser();
-            kinecterface = new Kinecterface(chooser.KinectSensorChooser);
+            kinecterface = new Kinecterface(chooser.KinectSensorChooser) { };
             kinecterface.Start();
             kinecterface.DataRecieved += DataRecieved;
+            kinecterface.ErrorWhileRecivingData += OnLag;
 
             mediaPlayer = new MediaPlayer();
             jointsPlayer = new MediaPlayer();
 
-            status = new Status(this);
-            status.Visibility = Visibility.Visible;
-            status.checkboxShowOnlyWantedTarget.Checked += (o, e) => ChangedShowAllTargets();
-            status.checkboxShowOnlyWantedTarget.Unchecked += (o, e) => ChangedShowAllTargets();
-            status.Header = Props.Default.TabHeaderStatus;
-            tabControl.Items.Add(status);
+            toGrab.Visibility = Visibility.Hidden;
+            targetsCanvas.Children.Add(toGrab);
+            Canvas.SetLeft(toGrab, 250);
+            Canvas.SetTop(toGrab, 250);
 
-            jointSelectionPanel = new JointSelection(this) { Header = Props.Default.TabHeaderJointSelection };
-            tabControl.Items.Add(jointSelectionPanel);
-            tabControl.SelectedItem = jointSelectionPanel;
+            InitialzizeTabControl();
 
             InitializeTargets();
-
-
-            //if this occurs, then FirstOrDefault returned null - therefore, there was no kinect object
-            //that wasn't null in the KinectSensor.KinectSensors array. This probably means
-            //there is no kinect sensor connected to the computer (and to power)
-            if (sensor == default(KinectSensor))
-            {
-                return;
-            }
-
         }
 
-        private void DataRecieved(Skeleton[] skeletons, short[,] depth, byte[] colorFrame)
+        private void InitialzizeTabControl()
         {
+            status = new Status(this);
+            status.Visibility = Visibility.Visible;
+            status.checkboxShowOnlyWantedTarget.Checked += (o, e) => UpdateShowAllTargets();
+            status.checkboxShowOnlyWantedTarget.Unchecked += (o, e) => UpdateShowAllTargets();
+            status.Header = Props.Default.TabHeaderStatus;
+            tabControl.Items.Add(status);
+            jointSelectionPanel = new JointSelection(this) { Header = Props.Default.TabHeaderJointSelection };
+            tabControl.Items.Add(jointSelectionPanel);
+            debuggingTable = new DebuggingTable();
+            debuggingTable.Visibility = Visibility.Visible;
+            tabControl.Items.Add(new TabItem() { Content = debuggingTable, Header = "debug" });
+            tabControl.SelectedItem = status;
+            
+        }
 
+        private void OnLag(SkeletonFrame skels, DepthImageFrame depth, ColorImageFrame color)
+        {
+            
+        }
+
+        private void DataRecieved(Skeleton[] skeletons, short[,] depthPixels, byte[] colorFrame)
+        {
             frame.Source = Consts.DrawingSettings.CreateBitmapSource(colorFrame);
-
-            //this weird line just reads:
-            //taken our array, called "skeletons", and from which choose the first that is not-null
-            //and is tracked. If there is no such skeleton, choose null.
+            
             skeleton = skeletons.FirstTracked();
 
-            if (skeleton == default(Skeleton)) //if the FirstOrDefault returned null,
-                                               //which happens when the array has only null or
-                                               //non-tracked skeletons.
+            if (skeleton == default(Skeleton))
             {
                 StatusLabel.Content = Props.Default.MessageCantSeePlayer;
                 return;
@@ -192,38 +204,36 @@ namespace BucketGame
                 return;
             } //if we aren't currently playing, then stop this method here.
 
-            Point3D locationOfCurrentJoint = BitmapPrefferences.ConvertToPoint(skeleton, currentlyUsedJoint, depth);
-            Point3D leftHand = BitmapPrefferences.ConvertToPoint(skeleton, JointType.HandLeft, depth);
-            Point3D rightHand = BitmapPrefferences.ConvertToPoint(skeleton, JointType.HandLeft, depth);
-            Point3D shoulderCenter = BitmapPrefferences.ConvertToPoint(skeleton, JointType.ShoulderCenter, depth);
+            Point3D locationOfCurrentJoint = BitmapPrefferences.ConvertToPoint(skeleton, currentlyUsedJoint, depthPixels);
+            debuggingTable["current joint"] = locationOfCurrentJoint.ToString();
+            Point3D leftHand = BitmapPrefferences.ConvertToPoint(skeleton, JointType.HandLeft, depthPixels);
+            Point3D rightHand = BitmapPrefferences.ConvertToPoint(skeleton, JointType.HandLeft, depthPixels);
+            Point3D shoulderCenter = BitmapPrefferences.ConvertToPoint(skeleton, JointType.ShoulderCenter, depthPixels);
 
             int radius = status.GetReachDistance(shoulderCenter.Z);
             Canvas.SetLeft(arc, shoulderCenter.X - radius);
             Canvas.SetTop(arc, shoulderCenter.Y - radius);
             arc.Width = arc.Height = 2 * radius;
 
-
-            //distance of the player's joint from the target
-            double distance = Util.Distance(locationOfCurrentJoint, currentTarget.CenterLocation);
+            //distance of the player's joint from the toGrab
+            double distance = Util.Distance(locationOfCurrentJoint, toGrab.CenterLocation);
+            debuggingTable["grab distance"] = distance.ToString();
             //status.ExtraInfo = distance.ToString();
 
             if (hasTouchedObject) //if the player already touched the object...
             {
                 //move the object to the player's joint
-                currentTarget.CenterLocation = (Point)locationOfCurrentJoint;
-
-                //this will be the player's joint's distance from the target
-                double distanceFromTarget = Util.Distance(locationOfCurrentJoint, locationOfCurrentJoint);
+                toGrab.CenterLocation = locationOfCurrentJoint;
 
                 //if we basically touched the target - then...
-                if (distanceFromTarget <= status.TouchingDistance)
+                if (locationOfCurrentJoint.IsWithin(currentTarget))
                 {
                     hasTouchedObject = false;
-                    CreateNextImage(BitmapPrefferences.ConvertToPoint(skeleton, JointType.ShoulderCenter, depth));
+                    CreateNextImage(BitmapPrefferences.ConvertToPoint(skeleton, JointType.ShoulderCenter, depthPixels));
                 }
 
             }
-            //if we haven't touched the target, but now we just firsly did, then..
+            //if we haven't touched the target, but now we just did, then..
             else if (distance <= status.TouchingDistance)
             {
                 hasTouchedObject = true;
@@ -249,14 +259,17 @@ namespace BucketGame
             {
                 labels[i] = new Label()
                 {
-                    Content = "0", FontSize = 42,
-                    Foreground = Brushes.Yellow, FontWeight = FontWeights.UltraBold
+                    Content = "0",
+                    FontSize = 42,
+                    Foreground = Brushes.Yellow,
+                    FontWeight = FontWeights.UltraBold
                 };
                 //iteratively initialize the Targets array
                 targets[i] =
                     new ImageObject(Consts.BagPaths[i])
                     {
-                       Width = Consts.TargetDiameter, Height = Consts.TargetDiameter
+                        Width = Consts.TargetDiameter,
+                        Height = Consts.TargetDiameter
                     };
 
                 //this is just a reference for conviniece. Everytime in this loop when there is an "it"
@@ -283,7 +296,7 @@ namespace BucketGame
             }//Yay, we were done with initializing the targets!! that wasn't so hard, now, wasn't it?
         }
 
-        public void ChangedShowAllTargets()
+        public void UpdateShowAllTargets()
         {
             bool? hideOtherTargets = status.checkboxShowOnlyWantedTarget.IsChecked;
             if (hideOtherTargets != null && (bool)hideOtherTargets) //should hide other targets
@@ -312,6 +325,7 @@ namespace BucketGame
         //this function is called when the game first starts.
         public void GameStart()
         {
+            toGrab.Visibility = Visibility.Visible;
             for (int i = 0; i < Consts.BagPaths.Length; i++)
             {
                 labels[i].Content = "0";
@@ -337,7 +351,6 @@ namespace BucketGame
         //this method safely changes the current joint randomly, and updates the status window
         public void ChangeJoint()
         {
-            BagsDown = !BagsDown;
             try
             {
                 currentlyUsedJoint = jointSelectionPanel.Selected.ChooseRandom(random);
@@ -368,10 +381,7 @@ namespace BucketGame
             }
             //current willl be the index of the next target.
             indexOfCurrentTarget = random.Next(0, Consts.ImageObjectPaths.Length);
-
-            currentTarget.RelativePath = (Consts.ImageObjectPaths[indexOfCurrentTarget]);
-
-
+            toGrab.RelativePath = Consts.ImageObjectPaths[indexOfCurrentTarget];
 
             //choose a random point at the top half of the screen
             //(the top half - because we don't want it to be too close to the targets)
@@ -388,15 +398,14 @@ namespace BucketGame
                     dx *= -1;
                 }
                 p = new Point(shoulderCenter.X + dx, shoulderCenter.Y - dy);
-            } while (!(p.X.IsStrictlyInRange(0, Consts.DrawingSettings.PixelWidth)
+            } while (!(
+                p.X.IsStrictlyInRange(0, Consts.DrawingSettings.PixelWidth)
                 && p.Y.IsStrictlyInRange(0, Consts.DrawingSettings.PixelHeight)));
 
-            currentTarget.RelativePath = Consts.ImageObjectPaths[indexOfCurrentTarget];
-
-            ChangedShowAllTargets();
+            UpdateShowAllTargets();
 
             //Move the imageObejct to this point
-            currentTarget.MoveTo(p);
+            toGrab.MoveTo(p);
 
             //we haven't touched THIS new object yet...
             hasTouchedObject = false;
@@ -421,12 +430,7 @@ namespace BucketGame
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            if (sensor == null) return;
-            sensor.ColorStream.Disable();
-            sensor.AudioSource.Stop();
-            sensor.DepthStream.Disable();
-            sensor.Stop();
-            sensor.Dispose();
+            Dispose();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -437,6 +441,76 @@ namespace BucketGame
             {
                 GameStart();
             }
+            else
+            {
+                toGrab.Visibility = Visibility.Hidden;
+            }
+        }
+
+
+        public void Dispose()
+        {
+            if (sensor == null) return;
+            sensor.ColorStream.Disable();
+            sensor.AudioSource.Stop();
+            sensor.DepthStream.Disable();
+            sensor.Stop();
+            sensor.Dispose();
+            GC.SuppressFinalize(this);
+        }
+
+        private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            try
+            {
+                if (e.Key == System.Windows.Input.Key.Down)
+                {
+                    sensor.ElevationAngle--;
+                }
+                else if (e.Key == System.Windows.Input.Key.Up)
+                {
+                    sensor.ElevationAngle++;
+                }
+            }
+            catch (Exception) { }
+        }
+
+        private void CheckBoxSeated_Checked(object sender, RoutedEventArgs e)
+        {
+            kinecterface.Seated = true;
+        }
+
+        private void CheckBoxSeated_Unchecked(object sender, RoutedEventArgs e)
+        {
+            kinecterface.Seated = false;
+        }
+
+        private void CheckBoxNearMode_Unchecked(object sender, RoutedEventArgs e)
+        {
+            kinecterface.NearMode = false;
+        }
+
+        private void CheckBoxNearMode_Checked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                kinecterface.NearMode = true;
+            }
+            catch (InvalidOperationException)
+            {
+                MessageBox.Show("Near mode is not supported");
+                CheckBoxNearMode.IsChecked = false;
+            }
+        }
+
+        private void ComboBoxBagsDown_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            BagsDown = ComboBoxBagsDown.SelectedItem == ComboBoxItemDown;
+        }
+
+        ~MainWindow()
+        {
+            Dispose();
         }
     }
 }

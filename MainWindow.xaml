@@ -7,20 +7,37 @@
         Icon="icon.ico"
         xmlns:local="clr-namespace:BucketGame"
         Title="MainWindow"  Closed="Window_Closed"
-        WindowState="Maximized" Width="Auto" Height="Auto"
+        WindowState="Maximized" Width="Auto"
         WindowStartupLocation="CenterScreen"
-        ResizeMode="NoResize">
+        ResizeMode="CanMinimize" Keyboard.KeyDown="Window_KeyDown">
     <Grid Margin="0,0,0,0">
         <Canvas Width="640" Height="480" x:Name="targetsCanvas" Margin="0,0,640,480">
-            <Image x:Name="frame" HorizontalAlignment="Left" VerticalAlignment="Top" Width="640" Height="480"/>
             <Image HorizontalAlignment="Left" VerticalAlignment="Top" Width="640" Height="480" Source="imgs/candyland.jpg"/>
+            <Image x:Name="frame" HorizontalAlignment="Left" VerticalAlignment="Top" Width="640" Height="480" Source="imgs/chocolate.png"/>
+
             <Ellipse Visibility="Visible" Fill="Transparent" Stroke="Black" x:Name="arc" StrokeThickness="3"/>
             <Label Content="" x:Name="StatusLabel" FontSize="30" Margin="10,162,10,244" HorizontalAlignment="Center" VerticalAlignment="Center" Height="44" Width="612" Foreground="Red"/>
             <Button Content="Start" Height="42" Canvas.Left="10" Canvas.Top="10" Width="122" Click="Button_Click" x:Name="GameButton"/>
             <kinect_toolkit:KinectSensorChooserUI Width="300" Height="106" x:Name="chooser" IsEnabled="True" Visibility="Visible"/>
-        
-        <TabControl Canvas.Left="640" x:Name="tabControl">
-                
+
+            <TabControl Canvas.Left="640" x:Name="tabControl">
+                <TabItem Header="שונות">
+                    <StackPanel>
+                        <CheckBox Content="מצב ישיבה" x:Name="CheckBoxSeated"
+                              Checked="CheckBoxSeated_Checked" Unchecked="CheckBoxSeated_Unchecked"
+                              IsChecked="False"/>
+
+                        <CheckBox x:Name="CheckBoxNearMode" Content="Near mode"
+                              Unchecked="CheckBoxNearMode_Unchecked" Checked="CheckBoxNearMode_Checked"/>
+                        <WrapPanel>
+                            <ComboBox SelectionChanged="ComboBoxBagsDown_SelectionChanged" x:Name="ComboBoxBagsDown">
+                                <ComboBoxItem Content="למטה" x:Name="ComboBoxItemDown"/>
+                                <ComboBoxItem Content="למעלה" x:Name="ComboBoxItemUp"/>
+                            </ComboBox>
+                            <Label Content="מיקום המטרה"/>
+                        </WrapPanel>
+                    </StackPanel>
+                </TabItem>
             </TabControl>
         </Canvas>
     </Grid>

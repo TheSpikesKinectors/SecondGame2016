@@ -17,9 +17,14 @@ namespace BucketGame
             return Math.Sqrt((X - point.X).Pow(2) + (Y - point.Y).Pow(2));
         }
 
-        public static explicit operator Point(Point3D point)
+        public static implicit operator Point(Point3D point)
         {
             return new Point(point.X, point.Y);
+        }
+
+        public override string ToString()
+        {
+            return string.Format("({0},{1},{2})", X, Y, Z);
         }
     }
 }

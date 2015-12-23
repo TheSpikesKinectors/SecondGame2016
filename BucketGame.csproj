@@ -74,7 +74,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="DebuggingTable.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="JointSelection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Loader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -86,6 +94,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DebuggingTable.xaml.cs">
+      <DependentUpon>DebuggingTable.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DrawingSettings.cs" />
     <Compile Include="Consts.cs" />
     <Compile Include="LengthMeasurment.cs" />
@@ -94,6 +105,9 @@
       <DependentUpon>JointSelection.xaml</DependentUpon>
     </Compile>
     <Compile Include="Kinecterface.cs" />
+    <Compile Include="Loader.xaml.cs">
+      <DependentUpon>Loader.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Point3D.cs" />
     <Compile Include="Props.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -168,6 +182,7 @@
   <ItemGroup>
     <Resource Include="icon.ico" />
     <Resource Include="imgs\candyland.jpg" />
+    <Resource Include="imgs\logo.png" />
     <Content Include="sounds\victory.mp3" />
     <Content Include="sounds\right.mp3" />
     <Content Include="sounds\left.mp3" />

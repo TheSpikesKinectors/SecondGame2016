@@ -6,6 +6,8 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Kinect;
+using System.Collections.Specialized;
+
 namespace BucketGame
 {
     /// <summary>
@@ -71,7 +73,14 @@ namespace BucketGame
         /// <returns>the distance between the two given points</returns>
         public static double Distance(dynamic p1, dynamic p2)
         {
-            double dx = p2.X - p1.X, dy = p2.Y - p1.Y;
+            double x1 = p1.X, x2 = p2.X, y1 = p1.Y, y2 = p2.Y;
+            string s = "";
+            if (x1.IsNaN()) s += "X1 ";
+            if (x2.IsNaN()) s += "x2 ";
+            if (y1.IsNaN()) s += "y1 ";
+            if (y2.IsNaN()) s += "y2 ";
+            DebuggingTable.LatestCreated["distance problems"] = s;
+            double dx = x2 - x1, dy = y1 - y2;
             return Math.Sqrt(dx*dx + dy*dy);
         }
 
@@ -342,5 +351,28 @@ namespace BucketGame
             }
         }
         
+        public static string Sample(this StringCollection coll)
+        {
+            return coll[new Random().Next(coll.Count)];
+        }
+
+        public static T Sample<T>(this Random rand, IEnumerable<T> enumerable)
+        {
+            return enumerable.ElementAt(rand.Next(enumerable.Count()));
+        }
+
+        public static bool IsWithin(this Point p, FrameworkElement elem)
+        {
+            double xMin = Canvas.GetLeft(elem), yMin = Canvas.GetTop(elem),
+                xMax = xMin + elem.ActualWidth, yMax = yMin + elem.ActualHeight;
+            return xMin <= p.X && p.X <= xMax
+                 && yMin <= p.Y && p.Y <= yMax;
+        }
+
+        public static bool IsWithin(this Point3D p3d, FrameworkElement elem)
+        {
+            Point p = (Point) p3d;
+            return p.IsWithin(elem);
+        }
     }
 }

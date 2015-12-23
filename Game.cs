@@ -79,5 +79,10 @@ namespace BucketGame
             timeStarted = DateTime.Now;
 
         }
+
+        public Game()
+        {
+            this.scorePerTarget = new int[Consts.BagPaths.Length];
+        }
     }
 }

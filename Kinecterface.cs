@@ -5,34 +5,24 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Kinect;
 using Microsoft.Kinect.Toolkit;
+using System.Windows;
+using BucketGame;
+
 namespace KinectorsLibrary
 {
     class Kinecterface
     {
         private KinectSensorChooser chooser;
         public event Action<Skeleton[], short[,], byte[]> DataRecieved;
-        public event Action<SkeletonFrame,DepthImageFrame,ColorImageFrame> ErrorWhileRecivingData;
-        private bool backgroundRemoval;
+        public event Action<SkeletonFrame, DepthImageFrame, ColorImageFrame> ErrorWhileRecivingData;
 
-        public bool BackgroundRemoval
-        {
-            get
-            {
-                return backgroundRemoval;
-            }
-
-            set
-            {
-                backgroundRemoval = value;
-            }
-        }
 
         public Kinecterface(KinectSensorChooser chooser)
         {
             this.chooser = chooser;
             this.chooser.KinectChanged += KinectChanged;
             this.DataRecieved = (skels, depth, colors) => { };
-            this.ErrorWhileRecivingData = (s,d,c) => { };
+            this.ErrorWhileRecivingData = (s, d, c) => { };
         }
 
         private void KinectChanged(object sender, KinectChangedEventArgs e)
@@ -56,7 +46,7 @@ namespace KinectorsLibrary
             using (DepthImageFrame depthFrame = e.OpenDepthImageFrame())
             using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())
             {
-                if(colorFrame == null || depthFrame == null || skeletonFrame == null)
+                if (colorFrame == null || depthFrame == null || skeletonFrame == null)
                 {
                     ErrorWhileRecivingData(skeletonFrame, depthFrame, colorFrame);
                     return;
@@ -66,6 +56,7 @@ namespace KinectorsLibrary
                 short[,] depths = new short[depthFrame.Width, depthFrame.Height];
                 short[] fromDepthFrame = new short[depthFrame.Width * depthFrame.Height];
                 depthFrame.CopyPixelDataTo(fromDepthFrame);
+                DebuggingTable.LatestCreated["size"] = fromDepthFrame.Length.ToString();
                 for (int i = 0; i < fromDepthFrame.Length; i++)
                 {
                     depths[i / depthFrame.Height, i % depthFrame.Height] = fromDepthFrame[i];
@@ -73,6 +64,7 @@ namespace KinectorsLibrary
                 byte[] colorPixels = new byte[colorFrame.PixelDataLength];
                 colorFrame.CopyPixelDataTo(colorPixels);
 
+                /*
                 //background removal
                 if (BackgroundRemoval)
                 {
@@ -105,9 +97,8 @@ namespace KinectorsLibrary
                                 isProbablyPerson = depth > minDepth && depth < maxDepth;
                             }
                             colorPixels[(y * colorFrame.Width + x) * 4] = (byte)(isProbablyPerson ? 255 : 0);
-                        }
-                    }
-                }
+                        } 
+                    }*/
                 DataRecieved(skeletons, depths, colorPixels);
             }
         }
@@ -126,6 +117,7 @@ namespace KinectorsLibrary
             sensor.Start();
             sensor.ColorStream.Enable();
             sensor.DepthStream.Enable();
+            sensor.SkeletonStream.Enable();
             sensor.AudioSource.Start();
         }
 
